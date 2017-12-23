@@ -177,24 +177,6 @@ def show_stations(path):
     return render_template("station.html", stations=stats, time=d.strftime("%R"), header=Markup(hdr))
 
 
-@app.route("/eink/<path:path>")
-def show_eink(path):
-    d = datetime.datetime.now()
-
-    stats = get_stations(path)
-
-    return render_template("eink.html", stations=stats, time=d.strftime("%Y-%m-%d %R"), looprange=5)
-
-@app.template_filter()
-def striptimefilter(value):
-    tmp = value.strip(' ')
-
-    if len(tmp) > 2:  # if its > 2, that means we have no space and tmp is only a string
-        return tmp
-
-    return tmp[1]  # otherwise its a list an we are interested in the second entry, the time
-
-
 rnv = pyrnvapi.RNVStartInfoApi(get_env_variable("RNV_API_KEY"))  # rnv key
 
 # global list of all available stations and all available lines
@@ -209,7 +191,5 @@ cached_stations = multi_key_dict()
 if __name__ == "__main__":
     getstations()
     getlines()
-
-    #app.jinja_env.filters['striptimefilter'] = striptimefilter
 
     app.run()
