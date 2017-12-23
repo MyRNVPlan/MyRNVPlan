@@ -1,0 +1,640 @@
+div {
+    display: inline-block;
+    text-align: center;
+}
+
+#s5:before{
+	content:"5";
+	background-color: #00975f;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s21:before{
+	content:"21";
+	background-color: #e30613;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s22:before{
+	content:"22";
+	background-color: #fdc300;
+	color: #000000;
+    padding: 5px;
+}
+
+#s23:before{
+	content:"23";
+	background-color: #e48f00;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s24:before{
+	content:"24";
+	background-color: #8d2176;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s26:before{
+	content:"26";
+	background-color: #f39b9a;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s27:before{
+	content:"27";
+	background-color: #4e2583;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s28:before{
+	content:"28";
+	background-color: #b2a0cd;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s29:before{
+	content:"29";
+	background-color: #10bbef;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s30:before{
+	content:"30";
+	background-color: #baabd4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s31:before{
+	content:"31";
+	background-color: #4b96d2;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s32:before{
+	content:"32";
+	background-color: #a1c3d6;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s33:before{
+	content:"33";
+	background-color: #0069b4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s34:before{
+	content:"34";
+	background-color: #009fe3;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s35:before{
+	content:"35";
+	background-color: #4e2583;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s36:before{
+	content:"36";
+	background-color: #b2a0cd;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s37:before{
+	content:"37";
+	background-color: #10bbef;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s38:before{
+	content:"38";
+	background-color: #0097b5;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s39:before{
+	content:"39";
+	background-color: #512985;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sM1:before{
+	content:"M1";
+	background-color: #f0d51f;
+	color: #000000;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sM2:before{
+	content:"M2";
+	background-color: #f0d51f;
+	color: #000000;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sM3:before{
+	content:"M3";
+	background-color: #f0d51f;
+	color: #000000;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sM4:before{
+	content:"M4";
+	background-color: #f0d51f;
+	color: #000000;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sM5:before{
+	content:"M5";
+	background-color: #f0d51f;
+	color: #000000;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s1:before{
+	content:"1";
+	background-color: #f39b9a;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s2:before{
+	content:"2";
+	background-color: #b00346;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s3:before{
+	content:"3";
+	background-color: #d6ad00;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s4:before{
+	content:"4";
+	background-color: #e30613;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s4A:before{
+	content:"4A";
+	background-color: #e30613;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s5A:before{
+	content:"5A";
+	background-color: #00975f;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s6:before{
+	content:"6";
+	background-color: #956c29;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s6A:before{
+	content:"6A";
+	background-color: #956c29;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s7:before{
+	content:"7";
+	background-color: #ffcc00;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s8:before{
+	content:"8";
+	background-color: #e17600;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s9:before{
+	content:"9";
+	background-color: #a9c94f;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s10:before{
+	content:"10";
+	background-color: #a71680;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s15:before{
+	content:"15";
+	background-color: #e3b674;
+	color: #ffffff;
+    padding: 5px;
+}
+
+#s40:before{
+	content:"40";
+	background-color: #4e2583;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s41:before{
+	content:"41";
+	background-color: #82d0f5;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s42:before{
+	content:"42";
+	background-color: #a1c3d6;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s43:before{
+	content:"43";
+	background-color: #589bd4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s44:before{
+	content:"44";
+	background-color: #009a93;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s45:before{
+	content:"45";
+	background-color: #0069b4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s46:before{
+	content:"46";
+	background-color: #a89bb1;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s47:before{
+	content:"47";
+	background-color: #82d0f5;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s48:before{
+	content:"48";
+	background-color: #009fe3;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s49:before{
+	content:"49";
+	background-color: #009640;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s50:before{
+	content:"50";
+	background-color: #abcc7b;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s51:before{
+	content:"51";
+	background-color: #0069b4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s52:before{
+	content:"52";
+	background-color: #a89bb1;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s53:before{
+	content:"53";
+	background-color: #10bbef;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s54:before{
+	content:"54";
+	background-color: #b2a0cd;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s55:before{
+	content:"55";
+	background-color: #4e2583;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s56:before{
+	content:"56";
+	background-color: #10bbef;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s57:before{
+	content:"57";
+	background-color: #5bc5f2;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s58:before{
+	content:"58";
+	background-color: #a1c3d6;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s59:before{
+	content:"59";
+	background-color: #a89bb1;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s60:before{
+	content:"60";
+	background-color: #4e2583;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s61:before{
+	content:"61";
+	background-color: #4b96d2;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s62:before{
+	content:"62";
+	background-color: #a89bb1;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s63:before{
+	content:"63";
+	background-color: #a1c3d6;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s64:before{
+	content:"64";
+	background-color: #0091a6;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s70:before{
+	content:"70";
+	background-color: #4b96d2;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s71:before{
+	content:"71";
+	background-color: #a89bb1;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s72:before{
+	content:"72";
+	background-color: #0069b4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s73:before{
+	content:"73";
+	background-color: #8bc5bd;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s74:before{
+	content:"74";
+	background-color: #82d0f5;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s75:before{
+	content:"75";
+	background-color: #008f88;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s76:before{
+	content:"76";
+	background-color: #4e2583;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s77:before{
+	content:"77";
+	background-color: #c290b8;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s78:before{
+	content:"78";
+	background-color: #4b96d2;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s84:before{
+	content:"84";
+	background-color: #8d2176;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s85:before{
+	content:"85";
+	background-color: #0069b4;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s86:before{
+	content:"86";
+	background-color: #82d0f5;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s87:before{
+	content:"87";
+	background-color: #69598f;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s88:before{
+	content:"88";
+	background-color: #8bc5bd;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s90:before{
+	content:"90";
+	background-color: #86bc25;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s94:before{
+	content:"94";
+	background-color: #83d0f5;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s96:before{
+	content:"96";
+	background-color: #c05d18;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#s97:before{
+	content:"97";
+	background-color: #ffed00;
+	color: #000000;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sE:before{
+	content:"E";
+	background-color: #9d9d9c;
+	color: #ffffff;
+	border-radius: 50%;
+    padding: 5px;
+}
+
+#sX:before{
+	content:"X";
+	background-color: #7c7c7b;
+	color: #ffffff;
+    padding: 5px;
+}
