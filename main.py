@@ -14,6 +14,7 @@ app = Flask(__name__)
 
 if "DEBUG" in os.environ:
     DEBUG = True
+    print("***Running in DEBUG mode!***")
 else:
     DEBUG = False
 
@@ -145,6 +146,7 @@ def get_stations(path):
 
     return stats
 
+
 @app.route("/<path:path>")
 def show_stations(path):
     d = datetime.datetime.now()
@@ -155,7 +157,9 @@ def show_stations(path):
 
     hdr = ""
     for stat in stats:
-        print(stat)
+        if DEBUG:
+            print("Prepared station:")
+            print(stat)
         # remove whitespaces from lines, eg. M 1 -> M1
         for dep in stat["listOfDepartures"]:
             dep["lineLabel"] = dep["lineLabel"].replace(' ', '')
