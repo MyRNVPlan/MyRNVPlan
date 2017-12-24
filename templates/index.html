@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Flask Template Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link href="{{ url_for('static',filename='styles/stylesheet.css') }}" rel="stylesheet">
-  </head>
-  <body>
-    <div class="container">
-      <table border="1" cellspacing="10">
-          <tr><td><b>Haltestelle</b></td><td><b>Kürzel</b></td></tr>
-        {% for n in stations %}
-        <tr><td><a href="{{n['shortName']}}">{{n['longName']}}</a></td><td><a href="{{n['shortName']}}">{{n['shortName']}}</a></td></tr>
-        {% endfor %}
-      </table>
+    <head>
+        <title>My RNV Plan</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="{{ url_for('static',filename='styles/stylesheet.css') }}" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+        <table border="1" cellspacing="10">
+            <tr><td><b>Haltestelle</b></td><td><b>Kürzel</b></td></tr>
+            {% for n in stations %}
+            <tr><td><a href="{{n['shortName']}}">{{n['longName']}}</a></td><td><a href="{{n['shortName']}}">{{n['shortName']}}</a></td></tr>
+            {% endfor %}
+        </table>
     </div>
-  </body>
+    </body>
 </html>
