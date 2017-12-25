@@ -92,13 +92,14 @@ def getstations():
     print(stations)
 
 
-def downloadstationjson(longname, stationid, date):
+def downloadstationjson(longname, stationid, date, poles=""):
     try:
         # todo pass date in proper format! needs to be time object (from package time)
-        jdata = rnv.getstationmonitor(stationid)
+        jdata = rnv.getstationmonitor(stationid, poles=poles)
         jdata["longName"] = longname
 
         return jdata
+
     except:
         print("Download of station failed: " + longname + " " + date)
         pass
@@ -111,7 +112,7 @@ def show_index():
     return render_template("index.html", stations=stations)
 
 
-@app.route("/favicon.ico") # ignore favicons
+@app.route("/favicon.ico")  # ignore favicons
 def ignore_favicon():
     return ""
 
@@ -125,12 +126,29 @@ def get_stations(path):
 
     stats = []
 
-    tmp = list(set(path.split('/')))
+    tmp = {}
+    t2 = []
+    for item in path.split('/'):
+        if item.isdigit():
+            if tmp[t2[-1]] == "":
+                tmp[t2[-1]] += str(item)
+            else:
+                tmp[t2[-1]] += ";" + str(item)
+        else:
+            t2.append(item)
+            tmp[t2[-1]] = ""
 
     # stations is a global list containing all station classes
     for station in tmp:
         if station.lower() in stations:
             stat = stations[station.lower()]
+            if tmp[station] != "":
+                print("Station with specific poles: " + station.lower() + " " + tmp[station])
+                dstat = downloadstationjson(stat["longName"], stat["hafasID"], date, poles=tmp[station])
+                dstat["shortName"] = stat["shortName"]
+                stats.append(dstat)
+                continue
+
             if station.lower() in cached_stations:
                 if cached_stations[station.lower()]["date"] == cdate:
                     print("Station found and valid: " + station.lower() + " " + date)
@@ -138,17 +156,19 @@ def get_stations(path):
                 else:  # outdated
                     print("Station found but not valid: " + station.lower() + " " + date)
                     del cached_stations[station.lower()]
-                    tmp = downloadstationjson(stat["longName"], stat["hafasID"], date)
-                    tmp["date"] = cdate
-                    cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = tmp
-                    stats.append(tmp)
+                    dstat = downloadstationjson(stat["longName"], stat["hafasID"], date)
+                    dstat["shortName"] = stat["shortName"]
+                    dstat["date"] = cdate
+                    cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
+                    stats.append(dstat)
             else:
                 print("Station not in cache: " + station.lower() + " " + date)
-                tmp = downloadstationjson(stat["longName"], stat["hafasID"], date)
-                tmp["date"] = cdate
-                cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = tmp
+                dstat = downloadstationjson(stat["longName"], stat["hafasID"], date)
+                dstat["shortName"] = stat["shortName"]
+                dstat["date"] = cdate
+                cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
 
-                stats.append(tmp)
+                stats.append(dstat)
 
     return stats
 
@@ -171,6 +191,10 @@ def show_stations(path):
             dep["lineLabel"] = dep["lineLabel"].replace(' ', '')
             lineid = dep["lineLabel"]
 
+            if dep["platform"] in pole_translation:
+                dep["platform"] = "<a href=/" + stat["shortName"] + "/" + pole_translation[dep["platform"]] + ">" \
+                              + dep["platform"] + "</a>"
+
             # if we have a new line, not in the lines list, we still want to display with css the line number
             if (lineid not in lines) and (lineid not in tmplines):
                 if hdr == "":
@@ -192,6 +216,12 @@ rnv = pyrnvapi.RNVStartInfoApi(get_env_variable("RNV_API_KEY"))  # rnv key
 # global list of all available stations and all available lines
 stations = multi_key_dict()
 lines = {}
+
+pole_translation = {"Steig A" : "1", "Steig B": "2", "Steig C": "3", "Steig D": "4", "Steig E": "5", "Steig F": "6",
+                    "Steig G": "7", "Steig H": "8", "Steig I": "9", "Steig J": "10", "Steig K": "11","Steig L": "12",
+                    "Steig M": "13", "Steig N": "14", "Steig O": "15", "Steig P": "16", "Steig Q": "17",
+                    "Steig R": "18",  "Steig S": "19", "Steig T": "20", "Steig U": "21", "Steig V": "22",
+                    "Steig W": "23", "Steig X": "24", "Steig Y": "25", "Steig Z": "26"}
 
 # caching of requested stations
 next_call_stations = time.time()

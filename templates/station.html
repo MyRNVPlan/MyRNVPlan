@@ -16,7 +16,7 @@
             <tr><th colspan="4"><b>{{n["longName"]}}</b></th></tr>
             <tr><td><b>Linie</b></td><td><b>Endstation</b></td><td><b>Steig</b></td><td><b>Abfahrt</b></td></tr>
             {% for b in n["listOfDepartures"] %}
-            <tr><td><div id="s{{b['lineLabel']}}"/><td>{{b['direction']}}</td><td>{{b['platform']}}</td><td>{{b['time']}}</td></tr>
+            <tr><td><div id="s{{b['lineLabel']}}"/><td>{{b['direction']}}</td><td>{{b['platform']|safe}}</td><td>{{b['time']}}</td></tr>
             {% endfor %}
         </table>
         {% endfor %}
