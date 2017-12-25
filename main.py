@@ -74,7 +74,13 @@ def getstations():
         global stations
 
         jdata = rnv.getstationpackage(regionid="1")
-        stations = jdata["stations"]
+
+        for station in jdata["stations"]:
+            # patch shortName for Waldschloß because it collides with Waidalle
+            if station["longName"] == "Waldschloß":
+                station["shortName"] = "WHWS"
+
+            stations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
 
     except:
         print("Couldn't download global stations list")
@@ -123,26 +129,26 @@ def get_stations(path):
 
     # stations is a global list containing all station classes
     for station in tmp:
-        for stat in stations:
-            if str(stat["shortName"]).lower() == station.lower() or str(stat["longName"]).lower() == station.lower():
-                if station.lower() in cached_stations:
-                    if cached_stations[station.lower()]["date"] == cdate:
-                        print("Station found and valid: " + station.lower() + " " + date)
-                        stats.append(cached_stations[station.lower()])
-                    else:  # outdated
-                        print("Station found but not valid: " + station.lower() + " " + date)
-                        del cached_stations[station.lower()]
-                        tmp = downloadstationjson(stat["longName"], stat["hafasID"], date)
-                        tmp["date"] = cdate
-                        cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = tmp
-                        stats.append(tmp)
-                else:
-                    print("Station not in cache: " + station.lower() + " " + date)
+        if station.lower() in stations:
+            stat = stations[station.lower()]
+            if station.lower() in cached_stations:
+                if cached_stations[station.lower()]["date"] == cdate:
+                    print("Station found and valid: " + station.lower() + " " + date)
+                    stats.append(cached_stations[station.lower()])
+                else:  # outdated
+                    print("Station found but not valid: " + station.lower() + " " + date)
+                    del cached_stations[station.lower()]
                     tmp = downloadstationjson(stat["longName"], stat["hafasID"], date)
                     tmp["date"] = cdate
                     cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = tmp
-
                     stats.append(tmp)
+            else:
+                print("Station not in cache: " + station.lower() + " " + date)
+                tmp = downloadstationjson(stat["longName"], stat["hafasID"], date)
+                tmp["date"] = cdate
+                cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = tmp
+
+                stats.append(tmp)
 
     return stats
 
@@ -184,7 +190,7 @@ def show_stations(path):
 rnv = pyrnvapi.RNVStartInfoApi(get_env_variable("RNV_API_KEY"))  # rnv key
 
 # global list of all available stations and all available lines
-stations = []
+stations = multi_key_dict()
 lines = {}
 
 # caching of requested stations
