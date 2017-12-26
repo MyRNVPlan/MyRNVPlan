@@ -10,7 +10,7 @@
         <div class="container">
         <table border="1" cellspacing="10">
             <tr><td><b>Haltestelle</b></td><td><b>Kürzel</b></td></tr>
-            {% for n in stations %}
+            {% for n in stations.values() %}
             <tr><td><a href="{{n['shortName']}}">{{n['longName']}}</a></td><td><a href="{{n['shortName']}}">{{n['shortName']}}</a></td></tr>
             {% endfor %}
         </table>
