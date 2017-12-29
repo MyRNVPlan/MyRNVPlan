@@ -181,8 +181,10 @@ def show_stations(path):
 
     tmplines = {}
 
+    title = ""
     hdr = ""
     for stat in stats:
+        title += stat["longName"] + " | "
         if DEBUG:
             print("Prepared station:")
             print(stat)
@@ -205,10 +207,17 @@ def show_stations(path):
                 hdr += "padding: 5px;\n}\n"
                 # and also add the new line to our temporary lines list
                 tmplines[lineid] = lineid
+
+    title = title[:-3]  # remove last 3 chars
+
     if hdr != "":
         hdr += "</style>"
 
-    return render_template("station.html", stations=stats, time=d.strftime("%R"), header=Markup(hdr))
+    return render_template("station.html",
+                           stations=stats,
+                           time=d.strftime("%R"),
+                           header=Markup(hdr),
+                           title=title)
 
 
 rnv = pyrnvapi.RNVStartInfoApi(get_env_variable("RNV_API_KEY"))  # rnv key
