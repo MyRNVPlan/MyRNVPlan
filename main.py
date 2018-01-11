@@ -172,7 +172,7 @@ def get_stations(path):
                 dstat["shortName"] = stat["shortName"]
 
                 dstat["date"] = cdate
-                print(dstat)
+
                 for s in dstat["listOfDepartures"]:
                     s["color"] = getColor(s)
 
@@ -184,11 +184,6 @@ def get_stations(path):
 
 
 def getColor(station):
-    # 0 min late - #44ff77
-    # 1 min late - #ccff55
-    # 2 min late - #ffff55
-    # 3 min late - #ffce55
-
     color = ["#21ff11", "#88ff11", "#bfff11", "#e7ff11",
              "#ffc711", "#ff9f11", "#ff6411", "#ff4011",
              "#ff2811", "#ff1111"]
