@@ -146,6 +146,8 @@ def get_stations(path):
                 print("Station with specific poles: " + station.lower() + " " + tmp[station])
                 dstat = downloadstationjson(stat["longName"], stat["hafasID"], date, poles=tmp[station])
                 dstat["shortName"] = stat["shortName"]
+                for s in dstat["listOfDepartures"]:
+                    s["color"] = getColor(s)
                 stats.append(dstat)
                 continue
 
@@ -159,18 +161,45 @@ def get_stations(path):
                     dstat = downloadstationjson(stat["longName"], stat["hafasID"], date)
                     dstat["shortName"] = stat["shortName"]
                     dstat["date"] = cdate
+                    for s in dstat["listOfDepartures"]:
+                        s["color"] = getColor(s)
+
                     cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
                     stats.append(dstat)
             else:
                 print("Station not in cache: " + station.lower() + " " + date)
                 dstat = downloadstationjson(stat["longName"], stat["hafasID"], date)
                 dstat["shortName"] = stat["shortName"]
+
                 dstat["date"] = cdate
+                print(dstat)
+                for s in dstat["listOfDepartures"]:
+                    s["color"] = getColor(s)
+
                 cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
 
                 stats.append(dstat)
 
     return stats
+
+
+def getColor(station):
+    # 0 min late - #44ff77
+    # 1 min late - #ccff55
+    # 2 min late - #ffff55
+    # 3 min late - #ffce55
+
+    color = ["#21ff11", "#88ff11", "#bfff11", "#e7ff11",
+             "#ffc711", "#ff9f11", "#ff6411", "#ff4011",
+             "#ff2811", "#ff1111"]
+
+    if len(station["time"].split('+')) <= 1:
+        return color[0]
+
+    if int(station["time"].split('+')[1]) >= len(color):
+        return color[-1]
+
+    return color[int(station["time"].split('+')[1])]
 
 
 @app.route("/<path:path>")
