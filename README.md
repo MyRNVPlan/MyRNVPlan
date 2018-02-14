@@ -1,7 +1,7 @@
 # MyRNVPlan
 This is a website which displays and queries the current departure times for all public transport stations in the Rhine-Neckar region operated by Rhein-Neckar-Verkehrs GmbH (RNV). 
 
-A live version of this project can be found at: https://plan.al3xst.de  
+A live version of this project can be found at: https://plan.al3xst.de
 
 ### Features
 
@@ -13,7 +13,7 @@ You can also display only selected platforms for each station. To do this, just 
 For example: https://plan.al3xst.de/Bismarckplatz/1/2/3/RSRS  
 This will display only the platforms Steig A, Steig B and Steig C for Bismarckplatz and every Platform for Rohrbach Süd (RSRS is the shortname of the station Rohrbach Süd). The platform numerical ids correspond (unfortunalty only mostly, I'm still trying to find out, what the IDs are for _all_ stations. For example platform id 11 corresponds on Bismarckplatz to Steig B for the line 5 and platform id 12 corresponds to Steig A for the line 5...) to the alphabetical id. Steig A has ID 1, Steig B has ID 2 etc.
 
-I'm still trying to figure out a more convenient way to use these features, besides having to manually edit the URL. I don't want to just add any JS library which may do the job. My highest priority is to keep the site as simple as possible and also not to load huge and heavy frameworks to solve some small inconveniences...  
+I'm still trying to figure out a more convenient way to use these features, besides having to manually edit the URL. I don't want to just add any JS library which may do the job. My highest priority is to keep the site as simple as possible and also not to load huge and heavy frameworks to solve some small inconveniences...
 
 ## Requirements
 `python3`
@@ -62,4 +62,5 @@ The `pyrnvapi` package which is used in this project, uses the REST Start.Info A
 That API is released under dl-de/by-2-0. See https://www.govdata.de/dl-de/by-2-0 for more information.  
 URL to Start.Info API: https://opendata.rnv-online.de/startinfo-api
 
+This project is licensed under the MIT License. See [LICENSE.txt](LICENSE.txt) for more information!
 
