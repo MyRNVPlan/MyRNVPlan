@@ -14,3 +14,8 @@ table{
 th, td {
     padding: 5px;
 }
+
+footer {
+    margin-top: 100px;
+    display: block;
+}
