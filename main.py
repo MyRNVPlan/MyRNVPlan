@@ -1,5 +1,6 @@
 from flask import Flask, render_template, Markup
 from multi_key_dict import multi_key_dict
+from collections import OrderedDict
 
 import datetime
 import threading
@@ -72,6 +73,7 @@ def getstations():
     try:
         global next_call_stations
         global stations
+        global stations_sorted
 
         jdata = rnv.getstationpackage(regionid="1")
 
@@ -81,6 +83,7 @@ def getstations():
                 station["shortName"] = "WHWS"
 
             stations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
+            stations_sorted[station["shortName"]] = station["longName"]
 
     except:
         print("Couldn't download global stations list")
@@ -109,7 +112,7 @@ def downloadstationjson(longname, stationid, date, poles=""):
 
 @app.route('/')
 def show_index():
-    return render_template("index.html", stations=stations)
+    return render_template("index.html", stations=stations_sorted)
 
 
 @app.route("/favicon.ico")  # ignore favicons
@@ -248,6 +251,7 @@ rnv = pyrnvapi.RNVStartInfoApi(get_env_variable("RNV_API_KEY"))  # rnv key
 
 # global list of all available stations and all available lines
 stations = multi_key_dict()
+stations_sorted = OrderedDict()
 lines = {}
 
 pole_translation = {"Steig A" : "1", "Steig B": "2", "Steig C": "3", "Steig D": "4", "Steig E": "5", "Steig F": "6",
