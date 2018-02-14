@@ -3,9 +3,17 @@ This is a website which displays and queries the current departure times for all
 
 A live version of this project can be found at: https://plan.al3xst.de  
 
+### Features
+
 To display multiple stations at once, just add the stations name after the url, separated by `/`  
 For example: https://plan.al3xst.de/Bismarckplatz/HD%20Hauptbahnhof/Rohrbach%20Süd  
 But you can use also the shortnames from the mainpage: https://plan.al3xst.de/BHBP/BHHF/RSRS
+
+You can also display only selected platforms for each station. To do this, just provide all platforms you want to see, sperated also by `/` after the respective station.  
+For example: https://plan.al3xst.de/Bismarckplatz/1/2/3/RSRS  
+This will display only the platforms Steig A, Steig B and Steig C for Bismarckplatz and every Platform for Rohrbach Süd (RSRS is the shortname of the station Rohrbach Süd). The platform numerical ids correspond (unfortunalty only mostly, I'm still trying to find out, what the IDs are for _all_ stations. For example platform id 11 corresponds on Bismarckplatz to Steig B for the line 5 and platform id 12 corresponds to Steig A for the line 5...) to the alphabetical id. Steig A has ID 1, Steig B has ID 2 etc.
+
+I'm still trying to figure out a more convenient way to use these features, besides having to manually edit the URL. I don't want to just add any JS library which may do the job. My highest priority is to keep the site as simple as possible and also not to load huge and heavy frameworks to solve some small inconveniences...  
 
 ## Requirements
 `python3`
