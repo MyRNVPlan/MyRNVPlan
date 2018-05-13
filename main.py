@@ -36,14 +36,14 @@ def get_env_variable(varname, *, default=None, defaulttext=None, check_debug=Tru
     return value
 
 
-def genCss():
+def gencss():
     for line in lines:
         print("#s" + line + ":before{")
         print("\tcontent:\"" + line + "\";")
         print("\tbackground-color: #" + lines[line]["hexcolor"] + ";")
         print("\tcolor: #" + lines[line]["textcolor"] + ";")
-        if lines[line]["lineType"] == "BUS":
-            print("\tborder-radius: 50%;") #cirle for buses
+        if lines[line]["lineType"] != "STRB":
+           print("\tborder-radius: 50%;")  # cirle for buses
         print("\tpadding: 5px;")
         print("}")
         print()
@@ -268,5 +268,6 @@ cached_stations = multi_key_dict()
 if __name__ == "__main__":
     getstations()
     getlines()
+    # gencss()
 
     app.run()
