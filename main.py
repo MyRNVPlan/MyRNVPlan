@@ -36,22 +36,24 @@ def get_env_variable(varname, *, default=None, defaulttext=None, check_debug=Tru
     return value
 
 
-def gencss():
-    for line in lines:
+def gen_css():
+    global glines
+
+    for line in glines:
         print("#s" + line + ":before{")
         print("\tcontent:\"" + line + "\";")
-        print("\tbackground-color: #" + lines[line]["hexcolor"] + ";")
-        print("\tcolor: #" + lines[line]["textcolor"] + ";")
-        if lines[line]["lineType"] != "STRB":
+        print("\tbackground-color: #" + glines[line]["hexcolor"] + ";")
+        print("\tcolor: #" + glines[line]["textcolor"] + ";")
+        if glines[line]["lineType"] != "STRB":
            print("\tborder-radius: 50%;")  # cirle for buses
         print("\tpadding: 5px;")
         print("}")
         print()
 
 
-def getlines():
+def get_all_lines():
     try:
-        global lines
+        global glines
 
         jdata = rnv.getalllines()
 
@@ -62,18 +64,18 @@ def getlines():
                 line["textcolor"] = "000000" # white for moonliner, because of yellow background
             else:
                 line["textcolor"] = "ffffff" # black for every other line
-            lines[line["lineID"].replace(' ', '')] = line
+            glines[line["lineID"].replace(' ', '')] = line
 
     except:
         print("Couldn't download global lines list")
         raise
 
 
-def getstations():
+def get_all_stations():
     try:
-        global next_call_stations
-        global stations
-        global stations_sorted
+        global gnext_call_stations
+        global gstations
+        global gstations_sorted
 
         jdata = rnv.getstationpackage(regionid="1")
 
@@ -82,20 +84,23 @@ def getstations():
             if station["longName"] == "Waldschloß":
                 station["shortName"] = "WHWS"
 
-            stations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
-            stations_sorted[station["shortName"]] = station["longName"]
+            gstations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
+            gstations_sorted[station["shortName"]] = station["longName"]
+
+            if "platforms" in gstations[str(station["hafasID"])]:
+                gstations[str(station["hafasID"])].pop('platforms', None)
 
     except:
         print("Couldn't download global stations list")
         raise
 
     print(str(datetime.datetime.now()) + " Updated stations list")
-    next_call_stations = next_call_stations + 1800
-    threading.Timer(next_call_stations - time.time(), getstations).start()
-    print(stations)
+    next_call_stations = gnext_call_stations + 1800
+    threading.Timer(next_call_stations - time.time(), get_all_stations).start()
+    print(gstations)
 
 
-def downloadstationjson(longname, stationid, date, poles=""):
+def get_station_json(longname, stationid, date, poles=""):
     try:
         # todo pass date in proper format! needs to be time object (from package time)
         jdata = rnv.getstationmonitor(stationid, poles=poles)
@@ -110,18 +115,35 @@ def downloadstationjson(longname, stationid, date, poles=""):
     return []
 
 
-@app.route('/')
-def show_index():
-    return render_template("index.html", stations=stations_sorted)
+def get_pole_info_json(stationid):
+    try:
+        jdata = rnv.getstationdetail(stationid)
+
+        return jdata
+    except:
+        print("Download station platform information: " + stationid)
+
+    return []
 
 
-@app.route("/favicon.ico")  # ignore favicons
-def ignore_favicon():
-    return ""
+def add_poles_to_station(stationid):
+    global gstations
+
+    poles = get_pole_info_json(stationid)
+
+    for pole in poles:
+        if "platforms" not in gstations[stationid]:
+            gstations[stationid]['platforms'] = {}
+        if not pole["active"]:
+            continue
+        if pole['platform'].lower() in gstations[stationid]['platforms']:
+            gstations[stationid]['platforms'][pole['platform'].lower()] += ';' + str(pole['pole'])
+        else:
+            gstations[stationid]['platforms'][pole['platform'].lower()] = str(pole['pole'])
 
 
-def get_stations(path):
-    global cached_stations
+def get_called_stations(path):
+    global gcached_stations
 
     d = datetime.datetime.now()
     date = d.strftime("%Y-%m-%d+%R")
@@ -129,64 +151,84 @@ def get_stations(path):
 
     stats = []
 
-    tmp = {}
-    t2 = []
+    # we have to account stuff like:
+    # /Im Eichwald/Bismarckplatz/A/B/H/F/
+    # -> Show all poles from "Im Eichwald" and only poles A, B, H and F from Bismarckplatz
+
+    laststation = ""
+    stations = {}
     for item in path.split('/'):
-        if item.isdigit():
-            if tmp[t2[-1]] == "":
-                tmp[t2[-1]] += str(item)
-            else:
-                tmp[t2[-1]] += ";" + str(item)
+        if item == "" or item.isdigit():
+            continue
+
+        if item.lower() in gstations:
+            laststation = item.lower()
+            stations[laststation] = ""
+
+            if "platforms" not in gstations[laststation]:
+                add_poles_to_station(gstations[laststation]['hafasID'])
+
         else:
-            t2.append(item)
-            tmp[t2[-1]] = ""
+            if laststation != "":
+                if "platforms" not in gstations[laststation]:
+                    add_poles_to_station(gstations[laststation]['hafasID'])
+
+                if item.lower() not in gstations[laststation]["platforms"]:
+                    continue
+
+                if stations[laststation] != "":
+                    stations[laststation] += ";" + gstations[laststation]["platforms"][item.lower()]
+                else:
+                    stations[laststation] = gstations[laststation]["platforms"][item.lower()]
 
     # stations is a global list containing all station classes
-    for station in tmp:
-        if station.lower() in stations:
-            stat = stations[station.lower()]
-            if tmp[station] != "":
-                print("Station with specific poles: " + station.lower() + " " + tmp[station])
-                dstat = downloadstationjson(stat["longName"], stat["hafasID"], date, poles=tmp[station])
+    for station in stations:
+        if station.lower() in gstations:
+            stat = gstations[station.lower()]
+
+            if stations[station] != "":
+                print("Station with specific poles: " + station.lower() + " " + stations[station])
+                dstat = get_station_json(stat["longName"], stat["hafasID"], date, poles=stations[station])
                 dstat["shortName"] = stat["shortName"]
                 for s in dstat["listOfDepartures"]:
-                    s["color"] = getColor(s)
+                    s["color"] = get_lateness_color(s)
                 stats.append(dstat)
                 continue
 
-            if station.lower() in cached_stations:
-                if cached_stations[station.lower()]["date"] == cdate:
+            if station.lower() in gcached_stations:
+                if gcached_stations[station.lower()]["date"] == cdate:
                     print("Station found and valid: " + station.lower() + " " + date)
-                    stats.append(cached_stations[station.lower()])
+                    stats.append(gcached_stations[station.lower()])
                 else:  # outdated
                     print("Station found but not valid: " + station.lower() + " " + date)
-                    del cached_stations[station.lower()]
-                    dstat = downloadstationjson(stat["longName"], stat["hafasID"], date)
+                    del gcached_stations[station.lower()]
+                    dstat = get_station_json(stat["longName"], stat["hafasID"], date)
                     dstat["shortName"] = stat["shortName"]
                     dstat["date"] = cdate
                     for s in dstat["listOfDepartures"]:
-                        s["color"] = getColor(s)
+                        s["color"] = get_lateness_color(s)
 
-                    cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
+                    gcached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
                     stats.append(dstat)
             else:
                 print("Station not in cache: " + station.lower() + " " + date)
-                dstat = downloadstationjson(stat["longName"], stat["hafasID"], date)
+                dstat = get_station_json(stat["longName"], stat["hafasID"], date)
+
                 dstat["shortName"] = stat["shortName"]
 
                 dstat["date"] = cdate
 
                 for s in dstat["listOfDepartures"]:
-                    s["color"] = getColor(s)
+                    s["color"] = get_lateness_color(s)
 
-                cached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
+                gcached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
 
                 stats.append(dstat)
 
     return stats
 
 
-def getColor(station):
+def get_lateness_color(station):
     color = ["#21ff11", "#88ff11", "#bfff11", "#e7ff11",
              "#ffc711", "#ff9f11", "#ff6411", "#ff4011",
              "#ff2811", "#ff1111"]
@@ -200,11 +242,21 @@ def getColor(station):
     return color[int(station["time"].split('+')[1])]
 
 
+@app.route('/')
+def show_index():
+    return render_template("index.html", stations=gstations_sorted)
+
+
+@app.route("/favicon.ico")  # ignore favicons
+def ignore_favicon():
+    return ""
+
+
 @app.route("/<path:path>")
 def show_stations(path):
     d = datetime.datetime.now()
 
-    stats = get_stations(path)
+    stats = get_called_stations(path)
 
     tmplines = {}
 
@@ -215,17 +267,20 @@ def show_stations(path):
         if DEBUG:
             print("Prepared station:")
             print(stat)
-        # remove whitespaces from lines, eg. M 1 -> M1
+        # remove whitespaces from lines, eg. "M 1" -> "M1"
         for dep in stat["listOfDepartures"]:
             dep["lineLabel"] = dep["lineLabel"].replace(' ', '')
             lineid = dep["lineLabel"]
 
-            if dep["platform"] in pole_translation:
-                dep["platform"] = "<a href=/" + stat["shortName"] + "/" + pole_translation[dep["platform"]] + ">" \
-                              + dep["platform"] + "</a>"
+            # display the correct platform
+            if "platform" in dep:
+                # last position in string from (ex. "Steig A") is our desired platform name
+                if len(dep["platform"]) < 10:  # some cheap method to detect if we haven't modified this before...
+                    dep["platform"] = "<a href=/" + stat["shortName"] + "/" + dep["platform"][-1:] + ">" \
+                                      + dep["platform"] + "</a>"
 
             # if we have a new line, not in the lines list, we still want to display with css the line number
-            if (lineid not in lines) and (lineid not in tmplines):
+            if (lineid not in glines) and (lineid not in tmplines):
                 if hdr == "":
                     hdr += "<style>"
                 hdr += "#s" + lineid + ":before{\n"
@@ -250,24 +305,17 @@ def show_stations(path):
 rnv = pyrnvapi.RNVStartInfoApi(get_env_variable("RNV_API_KEY"))  # rnv key
 
 # global list of all available stations and all available lines
-stations = multi_key_dict()
-stations_sorted = OrderedDict()
-lines = {}
-
-pole_translation = {"Steig A" : "1", "Steig B": "2", "Steig C": "3", "Steig D": "4", "Steig E": "5", "Steig F": "6",
-                    "Steig G": "7", "Steig H": "8", "Steig I": "9", "Steig J": "10", "Steig K": "11","Steig L": "12",
-                    "Steig M": "13", "Steig N": "14", "Steig O": "15", "Steig P": "16", "Steig Q": "17",
-                    "Steig R": "18",  "Steig S": "19", "Steig T": "20", "Steig U": "21", "Steig V": "22",
-                    "Steig W": "23", "Steig X": "24", "Steig Y": "25", "Steig Z": "26"}
+gstations = multi_key_dict()
+gstations_sorted = OrderedDict()
+glines = {}
 
 # caching of requested stations
-next_call_stations = time.time()
-cached_stations = multi_key_dict()
-
+gnext_call_stations = time.time()
+gcached_stations = multi_key_dict()
 
 if __name__ == "__main__":
-    getstations()
-    getlines()
-    # gencss()
+    get_all_stations()
+    get_all_lines()
+    # gen_css()
 
     app.run()

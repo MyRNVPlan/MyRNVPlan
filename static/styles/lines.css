@@ -576,6 +576,14 @@ div {
 	padding: 5px;
 }
 
+#sE:before{
+	content:"E";
+	background-color: #672165;
+	color: #ffffff;
+	border-radius: 50%;
+	padding: 5px;
+}
+
 #sX:before{
 	content:"X";
 	background-color: #7c7c7b;
