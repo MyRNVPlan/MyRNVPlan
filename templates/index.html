@@ -12,7 +12,7 @@
         <table border="1" cellspacing="10">
             <tr><td><b>Haltestelle</b></td><td><b>Kürzel</b></td></tr>
             {% for key,value in stations.items() %}
-            <tr><td><a href="{{value}}">{{value}}</a></td><td><a href="{{key}}">{{key}}</a></td></tr>
+            <tr><td><a href="{{value|urlencode|replace("/", "++")}}">{{value}}</a></td><td><a href="{{key}}">{{key}}</a></td></tr>
             {% endfor %}
         </table>
         </div>

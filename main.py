@@ -7,6 +7,7 @@ import threading
 import time
 import sys
 import os
+import re
 
 import pyrnvapi
 
@@ -158,6 +159,8 @@ def get_called_stations(path):
     laststation = ""
     stations = {}
     for item in path.split('/'):
+        item = re.sub(r"\+\+", r"/", item)
+
         if item == "" or item.isdigit():
             continue
 
