@@ -11,11 +11,11 @@ import re
 
 import pyrnvapi
 
-
 app = Flask(__name__)
 
 if "DEBUG" in os.environ:
     DEBUG = True
+    os.environ["FLASK_DEBUG"] = "True"
     print("***Running in DEBUG mode!***")
 else:
     DEBUG = False
@@ -26,14 +26,15 @@ def get_env_variable(varname, *, default=None, defaulttext=None, check_debug=Tru
     try:
         value = os.environ[varname]
     except KeyError:
-        if default == None or (check_debug and not DEBUG):
+        if default is None or (check_debug and not DEBUG):
             print("ENV Variable '{}' not set. Exiting program.".format(varname))
             sys.exit(1)
         else:
-            if defaulttext: print("   "+defaulttext)
+            if defaulttext:
+                print("   " + defaulttext)
             value = default
     if DEBUG:
-        print("{:20} {}".format(varname+":", value))
+        print("{:20} {}".format(varname + ":", value))
     return value
 
 
@@ -46,7 +47,7 @@ def gen_css():
         print("\tbackground-color: #" + glines[line]["hexcolor"] + ";")
         print("\tcolor: #" + glines[line]["textcolor"] + ";")
         if glines[line]["lineType"] != "STRB":
-           print("\tborder-radius: 50%;")  # cirle for buses
+            print("\tborder-radius: 50%;")  # cirle for buses
         print("\tpadding: 5px;")
         print("}")
         print()
@@ -62,9 +63,9 @@ def get_all_lines():
         for line in jdata:
             # add default textcolor
             if "M " in line["lineID"]:
-                line["textcolor"] = "000000" # white for moonliner, because of yellow background
+                line["textcolor"] = "000000"  # white for moonliner, because of yellow background
             else:
-                line["textcolor"] = "ffffff" # black for every other line
+                line["textcolor"] = "ffffff"  # black for every other line
             glines[line["lineID"].replace(' ', '')] = line
 
     except:
@@ -85,12 +86,22 @@ def get_all_stations():
             if station["longName"] == "Waldschloß":
                 station["shortName"] = "WHWS"
 
-            gstations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
+            try:
+                gstations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
+            except KeyError:
+                # Some stationnames have several ids, if insertion fails, ignore them!
+                # So we query both and take the one which returns more informations...
+                stat1 = len(rnv.getstationmonitor(gstations[station["shortName"].lower()]["hafasID"]))
+                stat2 = len(rnv.getstationmonitor(station["hafasID"]))
+                if stat1 < stat2:
+                    continue  # ignore new entry
+                del gstations[station["shortName"].lower()]
+                gstations[station["longName"].lower(), station["shortName"].lower(), str(station["hafasID"])] = station
+
             gstations_sorted[station["shortName"]] = station["longName"]
 
             if "platforms" in gstations[str(station["hafasID"])]:
                 gstations[str(station["hafasID"])].pop('platforms', None)
-
     except:
         print("Couldn't download global stations list")
         raise
@@ -186,47 +197,51 @@ def get_called_stations(path):
 
     # stations is a global list containing all station classes
     for station in stations:
-        if station.lower() in gstations:
-            stat = gstations[station.lower()]
+        if station.lower() not in gstations:
+            continue
 
-            if stations[station] != "":
+        stat = gstations[station.lower()]
+
+        if stations[station] != "":
+            if DEBUG:
                 print("Station with specific poles: " + station.lower() + " " + stations[station])
-                dstat = get_station_json(stat["longName"], stat["hafasID"], date, poles=stations[station])
-                dstat["shortName"] = stat["shortName"]
-                for s in dstat["listOfDepartures"]:
-                    s["color"] = get_lateness_color(s)
-                stats.append(dstat)
-                continue
+            dstat = get_station_json(stat["longName"], stat["hafasID"], date, poles=stations[station])
+            dstat["shortName"] = stat["shortName"]
 
-            if station.lower() in gcached_stations:
-                if gcached_stations[station.lower()]["date"] == cdate:
+            for s in dstat["listOfDepartures"]:
+                s["color"] = get_lateness_color(s)
+            stats.append(dstat)
+
+            continue
+
+        dstat = get_station_json(stat["longName"], stat["hafasID"], date)
+        dstat["shortName"] = stat["shortName"]
+        dstat["date"] = cdate
+
+        if station.lower() in gcached_stations:
+            if gcached_stations[station.lower()]["date"] == cdate:
+                if DEBUG:
                     print("Station found and valid: " + station.lower() + " " + date)
-                    stats.append(gcached_stations[station.lower()])
-                else:  # outdated
+                stats.append(gcached_stations[station.lower()])
+            else:  # outdated
+                if DEBUG:
                     print("Station found but not valid: " + station.lower() + " " + date)
-                    del gcached_stations[station.lower()]
-                    dstat = get_station_json(stat["longName"], stat["hafasID"], date)
-                    dstat["shortName"] = stat["shortName"]
-                    dstat["date"] = cdate
-                    for s in dstat["listOfDepartures"]:
-                        s["color"] = get_lateness_color(s)
-
-                    gcached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
-                    stats.append(dstat)
-            else:
-                print("Station not in cache: " + station.lower() + " " + date)
-                dstat = get_station_json(stat["longName"], stat["hafasID"], date)
-
-                dstat["shortName"] = stat["shortName"]
-
-                dstat["date"] = cdate
+                del gcached_stations[station.lower()]
 
                 for s in dstat["listOfDepartures"]:
                     s["color"] = get_lateness_color(s)
 
                 gcached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
-
                 stats.append(dstat)
+        else:
+            if DEBUG:
+                print("Station not in cache: " + station.lower() + " " + date)
+            for s in dstat["listOfDepartures"]:
+                s["color"] = get_lateness_color(s)
+
+            gcached_stations[stat["longName"].lower(), stat["shortName"].lower()] = dstat
+
+            stats.append(dstat)
 
     return stats
 
